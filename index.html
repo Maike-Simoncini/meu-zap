@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZapClone Dark</title>
+    <title>ZapClone 🚀</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,34 +11,56 @@
     <div id="loginModal" class="modal-overlay">
         <div class="modal-content">
             <h3>Entrar no Chat</h3>
-            <input type="text" id="usernameInput" placeholder="Seu apelido...">
-            <button id="startChat">Entrar</button>
+            <input type="text" id="usernameInput" placeholder="Seu apelido..." maxlength="15">
+            <button id="startChat">Entrar no Grupo</button>
         </div>
     </div>
 
     <div class="main-wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="top-icons">
-                <button id="closeMenu" class="icon-btn">☰</button>
-                <button class="icon-btn" title="Novo Chat">📝</button>
+                <button id="closeMenu" class="icon-btn">
+                    <span class="icon">☰</span>
+                    <span class="link-text">Recolher Menu</span>
+                </button>
+                <button class="icon-btn" id="newChatBtn">
+                    <span class="icon">📝</span>
+                    <span class="link-text">Limpar Histórico</span>
+                </button>
             </div>
             
             <div class="bottom-icons">
-                <div id="onlineIndicator" title="Pessoas Online">🟢 <span id="onlineCount">0</span></div>
-                <button class="icon-btn" title="Configurações">⚙️</button>
+                <div id="onlineIndicator" class="icon-btn">
+                    <span class="icon">🟢</span>
+                    <span class="link-text">Online: <span id="onlineCount">0</span></span>
+                </div>
+                <button class="icon-btn" id="themeToggle">
+                    <span class="icon">⚙️</span>
+                    <span class="link-text">Mudar Tema</span>
+                </button>
             </div>
         </aside>
 
         <main class="chat-container">
             <header class="chat-header">
-                <button id="menuToggle">☰</button>
-                <span id="displayMyName">Logando...</span>
+                <div class="header-left">
+                    <button id="menuToggle">☰</button>
+                    <strong class="project-name">ZapClone 🚀</strong>
+                </div>
+                <div class="header-center">
+                    <span id="displayMyName">Logando...</span>
+                </div>
+                <div class="header-right"></div>
             </header>
 
             <div id="chatBox" class="chat-messages"></div>
 
+            <div class="chat-notice">
+                ⚠️ Seja educado! Este é um grupo público gerenciado pelo ADM.
+            </div>
+
             <footer class="chat-footer">
-                <input type="text" id="messageInput" placeholder="Digite sua mensagem..." autocomplete="off">
+                <input type="text" id="messageInput" placeholder="Digite sua mensagem..." autocomplete="off" maxlength="500">
                 <button id="sendBtn">➤</button>
             </footer>
         </main>
