@@ -26,3 +26,25 @@ body { background-color: #d1d7db; height: 100vh; display: flex; align-items: cen
 .chat-input { padding: 10px; background: #f0f0f0; display: flex; align-items: center; gap: 10px; }
 .chat-input input { flex: 1; padding: 12px; border: none; border-radius: 20px; outline: none; }
 .chat-input button#sendBtn { padding: 10px 20px; border: none; background: #008069; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+/* Estilo para o Menu Mobile */
+@media (max-width: 768px) {
+    #menuToggle { display: block !important; } /* Mostra o botão ☰ no celular */
+
+    .sidebar {
+        position: absolute;
+        left: -100%; /* Esconde a barra para a esquerda */
+        top: 0;
+        bottom: 0;
+        z-index: 99;
+        width: 80% !important;
+        transition: 0.3s; /* Animação suave */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+
+    .sidebar.active {
+        left: 0; /* Mostra a barra quando ativa */
+    }
+
+    .container { position: relative; overflow: hidden; }
+}
