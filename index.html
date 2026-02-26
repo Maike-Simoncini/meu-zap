@@ -3,68 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZapClone: Grupo Público 🚀</title>
+    <title>ZapClone 🚀</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="loginModal" class="modal-overlay">
         <div class="modal-content">
-            <h3>Bem-vindo ao Grupo</h3>
-            <p>Como você quer ser chamado?</p>
+            <h3>Bem-vindo</h3>
             <input type="text" id="usernameInput" placeholder="Seu apelido...">
             <button id="startChat">Entrar no Grupo</button>
         </div>
     </div>
 
-    <div class="container">
-        <aside class="sidebar">
-            <header class="header">
-                <div style="font-size: 12px; line-height: 1.2;">
-                    <span style="display:block; opacity: 0.7;">Você está conectado como:</span>
-                    <span id="displayMyName" style="color: #00a884; font-size: 16px; font-weight: bold;">Logando...</span>
-                </div>
-            </header>
-            
-            <div id="onlineStatus" style="background: #00a884; color: white; padding: 8px; font-size: 13px; text-align: center; font-weight: bold;">
-                👥 <span id="onlineCount">0</span> Pessoas Online
-            </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <small>Conectado como:</small>
+            <strong id="displayMyName">Logando...</strong>
+        </div>
+        <div class="online-box">
+            👥 <span id="onlineCount">0</span> Online
+        </div>
+        <div class="group-info">
+            🚀 Grupo Principal
+        </div>
+        <button id="clearChatBtn" class="btn-admin" style="display:none;">🗑️ Limpar Tudo</button>
+    </aside>
 
-            <div class="contacts">
-                <div class="contact-item active">
-                    <div class="avatar">🚀</div>
-                    <div class="info">
-                        <span class="name">Grupo Principal</span>
-                        <span class="last-msg">Chat aberto a todos</span>
-                    </div>
-                </div>
-            </div>
+    <main class="chat-container">
+        <header class="chat-header">
+            <button id="menuToggle">☰</button>
+            <strong>ZapClone 🚀</strong>
+        </header>
 
-            <button id="clearChatBtn" style="display: none; background: #e74c3c; color: white; border: none; padding: 10px; margin: 10px; border-radius: 5px; cursor: pointer; width: calc(100% - 20px);">
-                🗑️ Limpar Histórico (ADM)
-            </button>
-        </aside>
+        <div id="chatBox" class="chat-messages"></div>
 
-        <main class="chat-window">
-            <header class="header">
-                <button id="menuToggle" style="background:none; border:none; font-size:24px; cursor:pointer; margin-right:15px; display:none;">☰</button>
-                <strong>ZapClone: Grupo Público 🚀</strong>
-            </header>
-            
-            <div class="message-container" id="chatBox"></div>
-
-            <div style="background: #fff; padding: 5px 20px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #eee;">
-                ⚠️ Seja educado! Este é um grupo público gerenciado pelo ADM.
-            </div>
-
-            <footer class="chat-input">
-                <input type="text" id="messageInput" placeholder="Envie sua mensagem aqui..." autocomplete="off">
-                <button id="sendBtn">Enviar</button>
-            </footer>
-        </main>
-    </div>
+        <footer class="chat-footer">
+            <input type="text" id="messageInput" placeholder="Mensagem..." autocomplete="off">
+            <button id="sendBtn">➤</button>
+        </footer>
+    </main>
 
     <script type="module" src="script.js"></script>
 </body>
 </html>
-
