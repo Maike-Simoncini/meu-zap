@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-// 1. Configurações do seu Firebase (Mantenha as suas chaves aqui)
+// 1. Suas chaves do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCQvYAPoDseWSDV50RHXoImk2zzx822amU",
   authDomain: "meuzap-be2dd.firebaseapp.com",
@@ -12,36 +12,45 @@ const firebaseConfig = {
   appId: "1:4751380990:web:34b4219fb8b19407ecb0af"
 };
 
-// 2. Inicialização do Firebase
+// 2. Inicialização
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const messagesRef = ref(db, 'mensagens');
 
-// 3. Variáveis de Controle
+// 3. Variáveis Globais
 let meuNome = "";
-const coresUsuarios = {}; // Armazena a cor de cada pessoa
-const notifySound = new Audio('snap.mp3'); // Certifique-se de subir o snap.mp3 no GitHub
+const coresUsuarios = {};
+const notifySound = new Audio('snap.mp3');
 
-// 4. Referências dos Elementos do HTML
+// 4. Referências do HTML
 const modal = document.getElementById('loginModal');
 const startBtn = document.getElementById('startChat');
 const nameInput = document.getElementById('usernameInput');
 const messageInput = document.getElementById('messageInput');
 const sendBtn = document.getElementById('sendBtn');
 const chatBox = document.getElementById('chatBox');
+const clearBtn = document.getElementById('clearChatBtn'); // O botão de limpar
 
-// 5. Função para gerar cor aleatória (para o nome dos amigos)
-const gerarCor = () => {
-    const cores = ['#25D366', '#34B7F1', '#FF5733', '#C70039', '#900C3F', '#581845', '#FFC300'];
-    return cores[Math.floor(Math.random() * cores.length)];
+// 5. Lógica de Login e Segurança do Botão ADM
+startBtn.onclick = () => {
+    const nomeDigitado = nameInput.value.trim();
+    if (nomeDigitado !== "") {
+        meuNome = nomeDigitado;
+        modal.style.display = 'none';
+
+        // Só mostra o botão de limpar se o nome for MAIKE (em maiúsculo)
+        if (meuNome.toUpperCase() === "MAIKE") {
+            clearBtn.style.display = "block";
+        } else {
+            clearBtn.style.display = "none";
+        }
+    }
 };
 
-// 6. Lógica de Login (Modal)
-startBtn.onclick = () => {
-    if (nameInput.value.trim() !== "") {
-        meuNome = nameInput.value;
-        modal.style.display = 'none';
-    }
+// 6. Função para gerar cores aleatórias para os outros
+const gerarCor = () => {
+    const cores = ['#34B7F1', '#FF5733', '#C70039', '#900C3F', '#FFC300', '#A29BFE'];
+    return cores[Math.floor(Math.random() * cores.length)];
 };
 
 // 7. Função de Enviar Mensagem
@@ -57,33 +66,39 @@ function sendMessage() {
     }
 }
 
-// Eventos de clique e tecla Enter
 sendBtn.onclick = sendMessage;
 messageInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
 
-// 8. Ouvir Novas Mensagens (Tempo Real)
+// 8. Lógica para LIMPAR TUDO (Apenas para você)
+clearBtn.onclick = () => {
+    if (confirm("ATENÇÃO: Deseja apagar TODO o histórico de mensagens?")) {
+        remove(messagesRef)
+            .then(() => {
+                chatBox.innerHTML = ""; // Limpa a tela localmente
+                alert("O banco de dados foi zerado!");
+            })
+            .catch((error) => alert("Erro ao apagar: " + error.message));
+    }
+};
+
+// 9. Recebimento de Mensagens em Tempo Real
 onChildAdded(messagesRef, (data) => {
     const msg = data.val();
     const div = document.createElement('div');
     
-    // Formatação da Hora
     const dataMsg = new Date(msg.timestamp);
     const hora = dataMsg.getHours().toString().padStart(2, '0') + ':' + 
                  dataMsg.getMinutes().toString().padStart(2, '0');
     
     div.classList.add('message');
 
-    // Se a mensagem for minha
     if (msg.usuario === meuNome) {
         div.classList.add('sent');
         div.innerHTML = `
             <span>${msg.texto}</span>
             <small style="display:block; font-size:10px; opacity:0.5; text-align:right; margin-top:4px;">${hora}</small>
         `;
-    } 
-    // Se a mensagem for de outra pessoa
-    else {
-        // Atribui uma cor fixa para esse usuário durante a sessão
+    } else {
         if (!coresUsuarios[msg.usuario]) {
             coresUsuarios[msg.usuario] = gerarCor();
         }
@@ -95,14 +110,10 @@ onChildAdded(messagesRef, (data) => {
             <small style="display:block; font-size:10px; opacity:0.5; text-align:right; margin-top:4px;">${hora}</small>
         `;
 
-        // Tocar som de notificação
-        notifySound.play().catch(() => {
-            // O som pode ser bloqueado pelo navegador se o usuário não interagiu com a página ainda.
-        });
+        // Toca o som se a aba estiver ativa
+        notifySound.play().catch(() => {});
     }
     
     chatBox.appendChild(div);
-    
-    // Scroll automático para a última mensagem
     chatBox.scrollTop = chatBox.scrollHeight;
 });
