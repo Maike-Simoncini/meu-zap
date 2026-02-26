@@ -10,29 +10,20 @@
 }
 
 body, html { 
-    height: 100%; 
-    overflow: hidden; 
-    background-color: var(--bg-dark); 
-    color: var(--text-main);
+    height: 100%; width: 100%; overflow: hidden;
+    background-color: var(--bg-dark); color: var(--text-main);
 }
 
-.main-wrapper { display: flex; height: 100vh; height: 100dvh; width: 100vw; }
+.main-wrapper { 
+    display: flex; height: 100vh; height: 100dvh; width: 100vw; overflow: hidden;
+}
 
 /* --- SIDEBAR --- */
 .sidebar { 
-    width: 68px; 
-    background: var(--sidebar-dark); 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: space-between; 
-    padding: 20px 0; 
-    transition: width 0.3s ease, left 0.3s ease; 
-    z-index: 1000; 
-    overflow: hidden; 
-    border-right: 1px solid var(--border-dark);
+    width: 68px; background: var(--sidebar-dark); display: flex; flex-direction: column; 
+    justify-content: space-between; padding: 20px 0; transition: width 0.3s ease, left 0.3s ease; 
+    z-index: 1000; overflow: hidden; border-right: 1px solid var(--border-dark);
 }
-
-/* Expansão no PC */
 .sidebar.expanded { width: 240px; }
 
 .icon-btn {
@@ -41,26 +32,20 @@ body, html {
     border-radius: 12px; white-space: nowrap;
 }
 .icon-btn:hover { background-color: #333537; color: white; }
-
-.link-text { 
-    display: none; 
-    margin-left: 15px; 
-    font-size: 14px; 
-    opacity: 0; 
-    transition: opacity 0.2s; 
-}
-
-/* Mostra texto apenas quando expandida */
+.link-text { display: none; margin-left: 15px; font-size: 14px; opacity: 0; }
 .sidebar.expanded .link-text { display: inline-block; opacity: 1; }
 .icon { font-size: 20px; min-width: 40px; text-align: center; }
 
 /* --- ÁREA DO CHAT --- */
-.chat-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
+.chat-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; }
+
 .chat-header { 
-    height: 60px; padding: 0 20px; display: flex; align-items: center; 
+    height: 60px; min-height: 60px; padding: 0 20px; display: flex; align-items: center; 
     justify-content: space-between; background: var(--bg-dark); border-bottom: 1px solid var(--border-dark);
+    position: sticky; top: 0; z-index: 999;
 }
-.header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+
+.header-left { display: flex; align-items: center; gap: 10px; flex: 1; }
 .header-center { flex: 2; text-align: center; }
 .header-right { flex: 1; }
 #displayMyName { color: var(--accent); font-weight: bold; }
@@ -69,9 +54,10 @@ body, html {
 .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
 
 /* BALÕES */
-.message { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 15px; }
+.message { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 15px; animation: fadeIn 0.3s; }
 .sent { align-self: flex-end; background: #2b2d31; border-bottom-right-radius: 2px; }
 .received { align-self: flex-start; background: var(--sidebar-dark); border: 1px solid var(--border-dark); border-bottom-left-radius: 2px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* RODAPÉ */
 .chat-notice { background: var(--bg-dark); padding: 6px; font-size: 11px; color: var(--text-sub); text-align: center; border-top: 1px solid var(--border-dark); }
@@ -79,52 +65,28 @@ body, html {
 #messageInput { flex: 1; background: var(--sidebar-dark); border: 1px solid var(--border-dark); padding: 12px 20px; border-radius: 25px; color: white; outline: none; }
 #sendBtn { background: none; border: none; color: var(--accent); font-size: 24px; cursor: pointer; }
 
-/* --- TEMA CLARO PERSONALIZADO (EXCELENTE) --- */
+/* --- TEMA CLARO --- */
 body.light-mode { 
-    --bg-dark: #f8f9fa; 
-    --sidebar-dark: #ffffff; 
-    --border-dark: #e0e0e0; 
-    --text-main: #202124; 
-    --text-sub: #5f6368; 
-    --accent: #1a73e8; /* Azul mais forte para o modo claro */
+    --bg-dark: #f8f9fa; --sidebar-dark: #ffffff; --border-dark: #e0e0e0; 
+    --text-main: #202124; --text-sub: #5f6368; --accent: #1a73e8; 
 }
+body.light-mode #messageInput { color: #000 !important; background: #fff; }
+body.light-mode #menuToggle, body.light-mode #closeMenu .icon, body.light-mode .project-name { color: #202124 !important; }
+body.light-mode .sent { background: #e3f2fd; color: #000; }
+body.light-mode .icon-btn:hover { background-color: #f1f3f4; color: #1a73e8 !important; }
+body.light-mode .icon-btn:hover .link-text { color: #1a73e8 !important; opacity: 1; }
+body.light-mode .icon-btn { color: #202124 !important; }
 
-/* Correção de visibilidade no modo claro */
-body.light-mode #messageInput { 
-    color: #000000 !important; /* Letras pretas */
-    background: #ffffff;
-}
-
-body.light-mode #menuToggle, 
-body.light-mode #closeMenu .icon,
-body.light-mode .project-name { 
-    color: #202124 !important; /* Ícone ☰ preto */
-}
-
-body.light-mode .sent { 
-    background: #e3f2fd; /* Azul bem clarinho para suas mensagens */
-    color: #000;
-}
-
-body.light-mode .icon-btn:hover {
-    background-color: #f1f3f4;
-}
-
-/* RESPONSIVIDADE MOBILE */
+/* MOBILE */
 @media (max-width: 768px) {
     #menuToggle { display: block; }
     .project-name { display: none; }
-    .sidebar { 
-        position: fixed; 
-        left: -250px; /* Esconde a aba totalmente */
-        height: 100%; 
-        width: 250px !important; 
-    }
-    .sidebar.active { left: 0; } /* Traz para a tela */
+    .sidebar { position: fixed; left: -250px; height: 100%; width: 250px !important; }
+    .sidebar.active { left: 0; }
 }
 
-/* LOGIN MODAL */
+/* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: #000; display: flex; align-items: flex-start; justify-content: center; z-index: 2000; padding-top: 10vh; }
 .modal-content { background: var(--sidebar-dark); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid var(--border-dark); width: 90%; max-width: 350px; }
 .modal-content input { width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px; border: 1px solid var(--border-dark); background: var(--bg-dark); color: white; }
-.modal-content button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 20px; font-weight: bold; cursor: pointer; color: #000; }
+.modal-content button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 20px; font-weight: bold; cursor: pointer; color: #fff; }
