@@ -20,7 +20,6 @@ let meuNome = "";
 const coresUsuarios = {};
 const notifySound = new Audio('snap.mp3');
 
-// Referências
 const modal = document.getElementById('loginModal'),
       startBtn = document.getElementById('startChat'),
       nameInput = document.getElementById('usernameInput'),
@@ -48,52 +47,38 @@ startBtn.onclick = () => {
     }
 };
 
-// ENVIAR MENSAGEM
+// ENVIAR
 function enviar() {
     const txt = messageInput.value.trim();
-    const limite = 500;
-
-    if (txt.length > limite) {
-        alert("Mensagem muito longa! O limite é de " + limite + " caracteres.");
-        return;
-    }
-
     if (txt !== "" && meuNome !== "") {
         push(messagesRef, { texto: txt, usuario: meuNome, timestamp: Date.now() });
         messageInput.value = "";
         messageInput.focus();
     }
 }
-
 sendBtn.onclick = enviar;
 messageInput.onkeypress = (e) => { if (e.key === 'Enter') enviar(); };
 
-// LOGICA DO MENU
+// MENU
 closeMenu.onclick = (e) => {
     e.stopPropagation();
-    if (window.innerWidth > 768) {
-        sidebar.classList.toggle('expanded'); // PC: Apenas expande
-    } else {
-        sidebar.classList.remove('active'); // Mobile: Fecha a aba toda
-    }
+    if (window.innerWidth > 768) sidebar.classList.toggle('expanded');
+    else sidebar.classList.remove('active');
 };
-
 menuToggle.onclick = (e) => {
     e.stopPropagation();
     sidebar.classList.add('active'); 
-    sidebar.classList.add('expanded'); // No Mobile já abre com texto
+    sidebar.classList.add('expanded');
 };
+chatBox.onclick = () => { sidebar.classList.remove('active'); };
 
-chatBox.onclick = () => {
-    sidebar.classList.remove('active'); // Fecha ao tocar no chat (Mobile)
-};
-
-// TEMA E LIMPEZA
+// TEMAS
 themeToggle.onclick = () => {
     document.body.classList.toggle('light-mode');
     localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
 };
 
+// LIMPEZA
 newChatBtn.onclick = () => {
     if (confirm("Apagar histórico para TODOS?")) remove(messagesRef);
 };
@@ -108,22 +93,16 @@ onChildAdded(messagesRef, (d) => {
     const hora = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     div.className = `message ${msg.usuario === meuNome ? 'sent' : 'received'}`;
     
-    // BADGE DE ADM (👑) PARA MAIKE
-    let badgeADM = "";
-    if (msg.usuario === 'MAIKE') {
-        badgeADM = " <span style='color: gold;'>👑</span>";
-    }
+    let badge = msg.usuario === 'MAIKE' ? " <span style='color:gold'>👑</span>" : "";
 
     if (msg.usuario !== meuNome) {
         if (!coresUsuarios[msg.usuario]) coresUsuarios[msg.usuario] = gerarCor();
-        div.innerHTML = `<small style="color:${coresUsuarios[msg.usuario]};font-weight:bold">${msg.usuario}${badgeADM}</small><br>`;
-    } else if (msg.usuario === 'MAIKE' && meuNome === 'MAIKE') {
-        // Mostra o badge para você mesmo nas suas mensagens
-        div.innerHTML = `<small style="color:${coresUsuarios[msg.usuario]};font-weight:bold">${msg.usuario}${badgeADM}</small><br>`;
+        div.innerHTML = `<small style="color:${coresUsuarios[msg.usuario]};font-weight:bold">${msg.usuario}${badge}</small><br>`;
+    } else {
+        div.innerHTML = `<small style="font-weight:bold;opacity:0.7">Você${badge}</small><br>`;
     }
     
     div.innerHTML += `<span>${msg.texto}</span><small style="display:block;font-size:10px;opacity:0.4;text-align:right">${hora}</small>`;
-    
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
     if (msg.usuario !== meuNome) notifySound.play().catch(()=>{});
