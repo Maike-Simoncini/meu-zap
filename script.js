@@ -11,6 +11,7 @@ const firebaseConfig = {
   appId: "1:4751380990:web:34b4219fb8b19407ecb0af"
 };
 
+// Inicialização
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const messagesRef = ref(db, 'mensagens');
@@ -20,7 +21,7 @@ let meuNome = "";
 const coresUsuarios = {};
 const notifySound = new Audio('snap.mp3');
 
-// Elementos do DOM
+// Referências
 const modal = document.getElementById('loginModal');
 const startBtn = document.getElementById('startChat');
 const nameInput = document.getElementById('usernameInput');
@@ -32,35 +33,27 @@ const chatBox = document.getElementById('chatBox');
 const clearBtn = document.getElementById('clearChatBtn');
 const emojiBtn = document.getElementById('emojiBtn');
 
-// --- 1. CONFIGURAÇÃO DO EMOJI PICKER ---
+// --- 1. EMOJI PICKER (Com proteção contra erro) ---
 try {
-    const picker = new EmojiButton({
-        position: 'top-start',
-        autoHide: false,
-        rootElement: document.body
-    });
+    if (typeof EmojiButton !== 'undefined') {
+        const picker = new EmojiButton({ position: 'top-start' });
+        emojiBtn.addEventListener('click', () => picker.togglePicker(emojiBtn));
+        picker.on('emoji', selection => {
+            messageInput.value += selection;
+            messageInput.focus();
+        });
+    }
+} catch (e) { console.warn("Emoji Picker não carregou, mas o chat vai funcionar."); }
 
-    emojiBtn.addEventListener('click', () => {
-        picker.togglePicker(emojiBtn);
-    });
-
-    picker.on('emoji', selection => {
-        messageInput.value += selection;
-        messageInput.focus();
-    });
-} catch (e) { console.error("Erro no Emoji Button:", e); }
-
-// --- 2. LÓGICA DE LOGIN ---
+// --- 2. LOGICA DE LOGIN ---
 startBtn.onclick = () => {
     const nome = nameInput.value.trim();
     if (nome !== "") {
         meuNome = nome;
-        displayMyName.innerText = meuNome; // Atualiza o nome na barra lateral
+        if (displayMyName) displayMyName.innerText = meuNome; // DESTrava o "Logando..."
         modal.style.display = 'none';
 
-        if (meuNome.toUpperCase() === "MAIKE") {
-            clearBtn.style.display = "block";
-        }
+        if (meuNome.toUpperCase() === "MAIKE") clearBtn.style.display = "block";
 
         const myStatusRef = ref(db, 'online/' + meuNome);
         set(myStatusRef, true);
@@ -70,41 +63,28 @@ startBtn.onclick = () => {
 
 // --- 3. CONTADOR ONLINE ---
 onValue(onlineRef, (snapshot) => {
-    const total = snapshot.size || 0;
-    onlineCountSpan.innerText = total;
+    if (onlineCountSpan) onlineCountSpan.innerText = snapshot.size || 0;
 });
 
-// --- 4. ENVIAR MENSAGENS ---
+// --- 4. ENVIAR E RECEBER (Padrão) ---
 function enviar() {
     const texto = messageInput.value.trim();
     if (texto !== "" && meuNome !== "") {
-        push(messagesRef, {
-            texto: texto,
-            usuario: meuNome,
-            timestamp: Date.now()
-        });
+        push(messagesRef, { texto: texto, usuario: meuNome, timestamp: Date.now() });
         messageInput.value = "";
     }
 }
 sendBtn.onclick = enviar;
 messageInput.onkeypress = (e) => { if (e.key === 'Enter') enviar(); };
 
-// --- 5. LIMPAR HISTÓRICO ---
-clearBtn.onclick = () => {
-    if (confirm("Apagar tudo?")) {
-        remove(messagesRef);
-        chatBox.innerHTML = "";
-    }
-};
+clearBtn.onclick = () => { if (confirm("Apagar tudo?")) remove(messagesRef); };
 
-// --- 6. RECEBER MENSAGENS ---
 const gerarCor = () => ['#34B7F1', '#FF5733', '#25D366', '#FFC300', '#A29BFE'][Math.floor(Math.random() * 5)];
 
 onChildAdded(messagesRef, (data) => {
     const msg = data.val();
     const div = document.createElement('div');
     const hora = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    
     div.classList.add('message');
     if (msg.usuario === meuNome) {
         div.classList.add('sent');
