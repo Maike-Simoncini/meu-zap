@@ -1,6 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getDatabase, ref, push, onChildAdded, remove, onValue, set, onDisconnect } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
+// Ajuste para mobile não esconder o campo de texto
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+// Toda vez que enviar mensagem, rolar para o fim
+function scrollDown() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyCQvYAPoDseWSDV50RHXoImk2zzx822amU",
   authDomain: "meuzap-be2dd.firebaseapp.com",
@@ -107,3 +116,4 @@ onChildAdded(messagesRef, (data) => {
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
 });
+
