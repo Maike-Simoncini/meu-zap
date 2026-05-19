@@ -1,6 +1,6 @@
-# EXCELENTE 🚀 - Chat em Tempo Real
+# EXCELENTE CHAT 🚀 - Chat em Tempo Real
 
-O **EXCELENTE** é uma aplicação de chat moderna, inspirada na interface do Google Gemini, focada em velocidade, design minimalista e experiência do usuário tanto em dispositivos móveis quanto em desktops.
+O **EXCELENTE CHAT** é uma aplicação de chat moderna, inspirada na interface do Google Gemini, focada em velocidade, design minimalista e experiência do usuário tanto em dispositivos móveis quanto em desktops.
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Finalizado-brightgreen)
 ![Firebase](https://img.shields.io/badge/Backend-Firebase-orange)
